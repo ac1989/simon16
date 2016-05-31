@@ -1,0 +1,32 @@
+.button {
+  width: 100px; height: 60px;
+  border-
+}
+
+.green {
+  background-color: green;
+}
+
+.red {
+  background-color: red;
+}
+
+.yellow {
+  background-color: yellow;
+}
+
+.blue {
+  background-color: blue;
+}
+
+.control {
+  background-color: grey;
+  color: white;
+  width: 100px; height: 60px;
+  text-align: center;
+}
+
+.control:hover {
+  background-color: lightgrey;
+  color: black;
+}
