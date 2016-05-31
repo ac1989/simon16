@@ -40,17 +40,12 @@ $( document ).ready(function() {
     checkTurn: function(value) {
       //console.log('Turn INDEX :: ' + this.turnIndex);
       if (this.sequence[this.turnIndex] === value) {
-        console.log('Correct button!')
         this.turnIndex++;
-        console.log('seq len :: ' + this.sequence.length + ' turnIndex :: ' + this.turnIndex);
-        console.log('sequence :: ' + this.sequence);
         if (this.turnIndex === this.sequence.length) {
-          console.log('Play Next Round :: Binds Off!');
           this.bindsOff();
           this.gameLoop();
         }
       } else {
-        console.log('Wrong Button!');
         this.gameReset();
       }
     },
