@@ -6,7 +6,7 @@ $( document ).ready(function() {
     $control:   [$( ".start" ), $( ".retry" )],
     sequence:   [],
     turnIndex:  0,
-    strict:     false,
+    strict:     true,
 
     // Object Methods
     seqLength:  function() {
@@ -21,13 +21,12 @@ $( document ).ready(function() {
       this.sequence.push(this.randomStep());
     },
 
-    // redo this awkward shit, clear timeouts?
+    // clear timeouts?
     playSteps: function(callback) {
       if (this.turnIndex < this.sequence.length) {
-        var that = this;
         this.$buttons[this.sequence[this.turnIndex]].css( "width", "200px" );
+        var that = this;
         setTimeout(function() {
-          console.log(that);
           that.$buttons[that.sequence[that.turnIndex]].css( "width", "100px" );
           that.turnIndex++;
           that.playSteps(callback);
@@ -39,10 +38,12 @@ $( document ).ready(function() {
     },
 
     checkTurn: function(value) {
-      console.log('Turn INDEX :: ' + this.turnIndex);
-      if (simon.sequence[simon.turnIndex] === value) {
+      //console.log('Turn INDEX :: ' + this.turnIndex);
+      if (this.sequence[this.turnIndex] === value) {
         console.log('Correct button!')
-        simon.turnIndex++;
+        this.turnIndex++;
+        console.log('seq len :: ' + this.sequence.length + ' turnIndex :: ' + this.turnIndex);
+        console.log('sequence :: ' + this.sequence);
         if (this.turnIndex === this.sequence.length) {
           console.log('Play Next Round :: Binds Off!');
           this.bindsOff();
@@ -63,7 +64,6 @@ $( document ).ready(function() {
       this.$buttons[1].on( "click", this.checkTurn.bind(this, 1) );
       this.$buttons[2].on( "click", this.checkTurn.bind(this, 2) );
       this.$buttons[3].on( "click", this.checkTurn.bind(this, 3) );
-      console.log('Button binds are now active.');
     },
 
     bindsOff: function() {
@@ -76,14 +76,14 @@ $( document ).ready(function() {
     bindControls: function() {
       this.$control[1].on( "click", this.gameReset.bind(this) );
       this.$control[0].on( "click", this.gameReset.bind(this) );
-      console.log('Controls Bound');
     },
 
     gameReset: function() {
+      this.bindsOff();
       this.resetTurn();
       this.sequence = [];
-      console.log('Game reset, turnIndex :: ' + this.turnIndex + ' sequence :: ' + this.sequence);
       this.gameLoop();
+
     },
 
     gameLoop: function() {
