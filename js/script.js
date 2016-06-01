@@ -3,16 +3,12 @@ $( document ).ready(function() {
 
     // Object Properties
     $buttons:   [$( ".green" ), $( ".red" ), $( ".yellow" ), $( ".blue" )],
-    $control:   [$( ".start" ), $( ".retry" )],
+    $control:   [$( ".start" ), $( ".retry" ), $( ".strict" )],
     sequence:   [],
     turnIndex:  0,
-    strict:     true,
+    strict:     false,
 
     // Object Methods
-    seqLength:  function() {
-      return this.sequence.length;
-    },
-
     randomStep: function() {
       return Math.floor(Math.random() * 4);
     },
@@ -26,32 +22,44 @@ $( document ).ready(function() {
       if (this.turnIndex < this.sequence.length) {
         this.$buttons[this.sequence[this.turnIndex]].css( "width", "200px" );
         var that = this;
-        setTimeout(function() {
-          that.$buttons[that.sequence[that.turnIndex]].css( "width", "100px" );
-          that.turnIndex++;
-          that.playSteps(callback);
-        }, 1000);
+        setTimeout((function() {
+          this.$buttons[this.sequence[this.turnIndex]].css( "width", "100px" );
+          this.turnIndex++;
+          this.playSteps(callback);
+        }).bind(this), 1000);
       } else {
         this.turnIndex = 0;
         callback();
       }
     },
 
-    checkTurn: function(value) {
+    checkTurn: function(userPressed) {
       //console.log('Turn INDEX :: ' + this.turnIndex);
-      if (this.sequence[this.turnIndex] === value) {
+      if (this.sequence[this.turnIndex] === userPressed) {
+        console.log('Correct!')
         this.turnIndex++;
         if (this.turnIndex === this.sequence.length) {
           this.bindsOff();
           this.gameLoop();
         }
       } else {
-        this.gameReset();
+        console.log('Incorrect!');
+        if (this.strict) {
+          this.gameReset();
+        } else {
+          this.bindsOff();
+          this.turnIndex = 0;
+          this.playSteps(this.bindsOn.bind(this));
+        }
       }
     },
 
     resetTurn: function() {
       this.turnIndex = 0;
+    },
+
+    toggleStrict: function() {
+      this.strict ? (this.strict = false) : (this.strict = true);
     },
 
     bindsOn: function() {
@@ -69,8 +77,9 @@ $( document ).ready(function() {
     },
 
     bindControls: function() {
-      this.$control[1].on( "click", this.gameReset.bind(this) );
       this.$control[0].on( "click", this.gameReset.bind(this) );
+      this.$control[1].on( "click", this.gameReset.bind(this) );
+      this.$control[2].on( "click", this.toggleStrict.bind(this) );
     },
 
     gameReset: function() {
