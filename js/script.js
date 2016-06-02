@@ -10,6 +10,12 @@ $( document ).ready(function() {
     turnIndex:  0,
     strict:     false,
     stepCount:  0,
+    colorMap: [
+      ["green", "lawnGreen"],
+      ["red", "tomato"],
+      ["yellow", "lightyellow"],
+      ["blue", "lightskyblue"]
+    ],
 
 
     // Object Methods
@@ -27,15 +33,19 @@ $( document ).ready(function() {
       this.$count.html(this.stepCount);
     },
 
-    // clear timeouts?
     playSteps: function(callback) {
       this.controlsOff();
       if (this.turnIndex < this.sequence.length) {
-        this.$buttons[this.sequence[this.turnIndex]].css( "width", "200px" );
         this.$sound[this.sequence[this.turnIndex]][0].play();
+        
+        this.$buttons[this.sequence[this.turnIndex]].css( "background-color", 
+        this.colorMap[this.sequence[this.turnIndex]][1] );
+
         var that = this;
         setTimeout((function() {
-          this.$buttons[this.sequence[this.turnIndex]].css( "width", "100px" );
+          this.$buttons[this.sequence[this.turnIndex]].css( "background-color", 
+          this.colorMap[this.sequence[this.turnIndex]][0] );
+
           this.turnIndex++;
           this.playSteps(callback);
         }).bind(this), 1000);
@@ -46,11 +56,19 @@ $( document ).ready(function() {
       }
     },
 
+    // Too much repeating code, split to functions;
     checkTurn: function(userPressed) {
       //console.log('Turn INDEX :: ' + this.turnIndex);
       if (this.sequence[this.turnIndex] === userPressed) {
         console.log('Correct!');
         this.$sound[userPressed][0].play();
+        this.$buttons[this.sequence[this.turnIndex]].css( "background-color", 
+        this.colorMap[this.sequence[this.turnIndex]][1] );
+        var index = this.turnIndex;
+        setTimeout(function() {
+          this.$buttons[this.sequence[index]].css( "background-color", 
+          this.colorMap[this.sequence[index]][0] );
+        }.bind(this), 800);
         this.turnIndex++;
         if (this.turnIndex === this.sequence.length) {
           setTimeout(function() {
