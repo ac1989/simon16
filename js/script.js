@@ -4,9 +4,13 @@ $( document ).ready(function() {
     // Object Properties
     $buttons:   [$( ".green" ), $( ".red" ), $( ".yellow" ), $( ".blue" )],
     $control:   [$( ".start" ), $( ".retry" ), $( ".strict" )],
+    $sound:     [$( "#sound01" ), $( "#sound02" ), $( "#sound03" ), $( "#sound04" ), ],
+    $count:     $( ".count" ),
     sequence:   [],
     turnIndex:  0,
     strict:     false,
+    stepCount:  0,
+
 
     // Object Methods
     randomStep: function() {
@@ -15,12 +19,20 @@ $( document ).ready(function() {
 
     addStep: function() {
       this.sequence.push(this.randomStep());
+      this.updateCount();
+    },
+
+    updateCount: function() {
+      this.stepCount = this.sequence.length;
+      this.$count.html(this.stepCount);
     },
 
     // clear timeouts?
     playSteps: function(callback) {
+      this.controlsOff();
       if (this.turnIndex < this.sequence.length) {
         this.$buttons[this.sequence[this.turnIndex]].css( "width", "200px" );
+        this.$sound[this.sequence[this.turnIndex]][0].play();
         var that = this;
         setTimeout((function() {
           this.$buttons[this.sequence[this.turnIndex]].css( "width", "100px" );
@@ -29,6 +41,7 @@ $( document ).ready(function() {
         }).bind(this), 1000);
       } else {
         this.turnIndex = 0;
+        this.controlsOn();
         callback();
       }
     },
@@ -36,11 +49,15 @@ $( document ).ready(function() {
     checkTurn: function(userPressed) {
       //console.log('Turn INDEX :: ' + this.turnIndex);
       if (this.sequence[this.turnIndex] === userPressed) {
-        console.log('Correct!')
+        console.log('Correct!');
+        this.$sound[userPressed][0].play();
         this.turnIndex++;
         if (this.turnIndex === this.sequence.length) {
-          this.bindsOff();
-          this.gameLoop();
+          setTimeout(function() {
+            this.bindsOff();
+            this.gameLoop();
+          }.bind(this), 1000)
+          
         }
       } else {
         console.log('Incorrect!');
@@ -59,7 +76,14 @@ $( document ).ready(function() {
     },
 
     toggleStrict: function() {
-      this.strict ? (this.strict = false) : (this.strict = true);
+      // this.strict ? (this.strict = false) : (this.strict = true);
+      if (this.strict) {
+        this.strict = false;
+        this.$control[2].css( "background-color", "grey" );
+      } else {
+        this.strict = true;
+        this.$control[2].css( "background-color", "red" );
+      }
     },
 
     bindsOn: function() {
@@ -76,10 +100,16 @@ $( document ).ready(function() {
       simon.$buttons[3].off();
     },
 
-    bindControls: function() {
+    controlsOn: function() {
       this.$control[0].on( "click", this.gameReset.bind(this) );
       this.$control[1].on( "click", this.gameReset.bind(this) );
       this.$control[2].on( "click", this.toggleStrict.bind(this) );
+    },
+
+    controlsOff: function() {
+      this.$control[0].off();
+      this.$control[1].off();
+      this.$control[2].off();
     },
 
     gameReset: function() {
@@ -99,7 +129,7 @@ $( document ).ready(function() {
 
     init: function() {
       console.log('INIT');
-      this.bindControls();
+      this.controlsOn();
     }
   }
   // End Of Simon Object
