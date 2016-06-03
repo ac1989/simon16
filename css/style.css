@@ -30,3 +30,11 @@
   background-color: lightgrey;
   color: black;
 }
+
+.todo {
+  font-family: monospace;
+}
+
+.todo h4 {
+  font-size: 1.4em;
+}

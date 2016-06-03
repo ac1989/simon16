@@ -70,7 +70,9 @@ $( document ).ready(function() {
           this.colorMap[this.sequence[index]][0] );
         }.bind(this), 800);
         this.turnIndex++;
-        if (this.turnIndex === this.sequence.length) {
+        if (this.sequence.length === 5 && this.turnIndex === this.sequence.length) {
+          this.victory();
+        } else if (this.turnIndex === this.sequence.length) {
           setTimeout(function() {
             this.bindsOff();
             this.gameLoop();
@@ -80,7 +82,7 @@ $( document ).ready(function() {
       } else {
         console.log('Incorrect!');
         if (this.strict) {
-          this.gameReset();
+          setTimeout(function() { this.gameReset(); }.bind(this), 2000);          
         } else {
           this.bindsOff();
           this.turnIndex = 0;
@@ -91,6 +93,15 @@ $( document ).ready(function() {
 
     resetTurn: function() {
       this.turnIndex = 0;
+    },
+
+    victory: function() {
+      console.log('You are a weiner!');
+      this.bindsOff();
+    },
+
+    randomFlashing: function() {
+
     },
 
     toggleStrict: function() {
