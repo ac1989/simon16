@@ -105,7 +105,6 @@ $( document ).ready(function() {
     },
 
     toggleStrict: function() {
-      // this.strict ? (this.strict = false) : (this.strict = true);
       if (this.strict) {
         this.strict = false;
         this.$control[2].css( "background-color", "grey" );
@@ -164,8 +163,3 @@ $( document ).ready(function() {
   // End Of Simon Object
   simon.init();
 })
-// on click start
-// computer generates first turn and 'plays' it
-// user can then 'try'
-// on clicking chceck click against sequence[turnIndex], correct tile ++ turnIndex
-// if all steps match computer adds new step, --> step 3
